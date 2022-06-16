@@ -15,9 +15,10 @@ public class BatterySystemManager {
         assert (batteryIsOk(50, 81, 0.0f) == false);
         assert (batteryIsOk(50, 10, 0.81f) == false);
         assert (batteryIsOk(50, 85, 1) == false);
+
         assert(batteryIsOk(12, 40, 0.6f) == true);
         assert(batteryIsOk(20, 50, 0.6f) == true);
-        assert(batteryIsOk(45, 20, 0.8f) == true);
-        assert(batteryIsOk(0, 80, 0.8f) == true);
+        assert(batteryIsOk(45, 20, 0.8f) == false);
+        assert(batteryIsOk(0, 80, 0.80f) == false);
     }
 }
