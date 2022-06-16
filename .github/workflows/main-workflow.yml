@@ -17,6 +17,6 @@ jobs:
       with:
         java-version: 1.8
     - name: Build
-      run: javac vitals/Main.java
+      run: javac vitals/Validator.java vitals/BatteryStatusValidator.java vitals/TemperatureValidator.java vitals/SocValidator.java vitals/ChargeRateValidator.java  vitals/BatterySystemManager.java
     - name: Verify
-      run: java -ea -classpath . vitals.Main
+      run: java -ea -classpath . vitals.BatterySystemManager
