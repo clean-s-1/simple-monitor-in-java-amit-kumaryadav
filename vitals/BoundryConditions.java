@@ -37,21 +37,17 @@ public class BoundryConditions {
         ArrayList<String> messages = new ArrayList<>();
         Map<String, String> conditionMap = conditions.get(type);
         for (Map.Entry<String, String> hm : conditionMap.entrySet()) {
-            if (compareValues(value, messageType, messages, hm)) break;
+            if (compareValues(value, messageType, messages, hm) && hm.getValue().contains(messageType)) break;
         }
         return messages;
     }
 
     private boolean compareValues(float value, String messageType, ArrayList<String> messages, Map.Entry<String, String> hm) {
-        double min;
-        double max;
-        if (hm.getValue().contains(messageType)) {
-            min = Double.parseDouble(hm.getKey().split("-")[0]);
-            max = Double.parseDouble(hm.getKey().split("-")[1]);
-            if (value >= min && value <= max) {
-                messages.add(hm.getValue());
-                return true;
-            }
+        double min = Double.parseDouble(hm.getKey().split("-")[0]);
+        double max = Double.parseDouble(hm.getKey().split("-")[1]);
+        if (value >= min && value <= max) {
+            messages.add(hm.getValue());
+            return true;
         }
         return false;
     }
