@@ -1,24 +1,27 @@
 package vitals;
 
+import java.util.Arrays;
+
 public class BatterySystemManager {
-    static boolean batteryIsOk(float temperature, float soc, float chargeRate) {
-        boolean temperatureValidationResult = new Validator(new TemperatureValidator()).executeValidator(temperature);
-        boolean socValidationResult = new Validator(new SocValidator()).executeValidator(soc);
-        boolean chargeValidationRateResult = new Validator(new ChargeRateValidator()).executeValidator(chargeRate);
-        return (temperatureValidationResult && socValidationResult && chargeValidationRateResult);
+    boolean batteryIsOk(SystemInput temperatureInput, SystemInput socInput, SystemInput chargeRateInput, String local) {
+        TemperatureValidator temperatureValidatorComposite = new TemperatureValidator(temperatureInput.validationValue, temperatureInput.unitType, temperatureInput.isMessageEnabled);
+        SocValidator socValidatorComposite = new SocValidator(socInput.validationValue, socInput.unitType, socInput.isMessageEnabled);
+        ChargeRateValidator chargeRateValidatorComposite = new ChargeRateValidator(chargeRateInput.validationValue, chargeRateInput.unitType, chargeRateInput.isMessageEnabled);
+        return new StatusValidator(Arrays.asList(temperatureValidatorComposite, socValidatorComposite, chargeRateValidatorComposite), local).batteryIsOk();
     }
 
     public static void main(String[] args) {
-        assert (batteryIsOk(25, 70, 0.7f) == true);
-        assert (batteryIsOk(50, 85, 0.0f) == false);
+        BatterySystemManager bsm = new BatterySystemManager();
+        Localizations.loadLocalizations();
+        BoundryConditions.setConditions();
+        assert (bsm.batteryIsOk(new SystemInput(47, FAHRENHEIT_CONST, true), new SystemInput(77, null, true), new SystemInput(0.9f, null, true), "de") == false);
+        assert (bsm.batteryIsOk(new SystemInput(8.33f, CELSIUS_CONST, true), new SystemInput(77, null, true), new SystemInput(0.9f, null, true), "en") == false);
 
-        assert (batteryIsOk(50, 81, 0.0f) == false);
-        assert (batteryIsOk(50, 10, 0.81f) == false);
-        assert (batteryIsOk(50, 85, 1) == false);
-
-        assert(batteryIsOk(12, 40, 0.6f) == true);
-        assert(batteryIsOk(20, 50, 0.6f) == true);
-        assert(batteryIsOk(45, 20, 0.8f) == false);
-        assert(batteryIsOk(0, 80, 0.80f) == false);
+        assert (bsm.batteryIsOk(new SystemInput(25, FAHRENHEIT_CONST, true), new SystemInput(70, null, true), new SystemInput(0.7f, null, true), "de") == true);
+        assert (bsm.batteryIsOk(new SystemInput(0, FAHRENHEIT_CONST, true), new SystemInput(80, null, true), new SystemInput(0.80f, null, true), "en") == false);
+        assert (bsm.batteryIsOk(new SystemInput(20, FAHRENHEIT_CONST, true), new SystemInput(50, null, true), new SystemInput(0.60f, null, true), "en") == true);
     }
+
+    static String FAHRENHEIT_CONST = "Fahrenheit";
+    static String CELSIUS_CONST = "Celsius";
 }

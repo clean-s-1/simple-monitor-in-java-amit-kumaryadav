@@ -1,13 +1,15 @@
 package vitals;
 
-public class Validator {
-    private BatteryStatusValidator batteryStatusValidator;
+import java.util.ArrayList;
 
-    public Validator(BatteryStatusValidator batteryStatusValidator) {
-        this.batteryStatusValidator = batteryStatusValidator;
-    }
+public interface Validator {
 
-    public boolean executeValidator(float validateValue) {
-        return batteryStatusValidator.batteryIsOk(validateValue);
-    }
+    float translateToCommonUnits();
+
+    ArrayList<String> getWarningList(float validationValue);
+
+    ArrayList<String> getErrorList(float validationValue);
+
+    boolean batteryIsOk();
+
 }
